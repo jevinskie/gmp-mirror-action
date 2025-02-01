@@ -3,7 +3,7 @@ name: mirror
 on:
   workflow_dispatch:
   schedule:
-    - cron: "20 3 */1 * *"
+    - cron: "37 3 */1 * *"
 
 permissions:
   contents: write
@@ -13,21 +13,15 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    if: github.repository_owner == 'gmp-mirror' # prevent from running on a fork
+    if: github.repository_owner == 'jevinskie' # prevent from running on a fork
     env:
-      http_proxy: http://127.0.0.1:9080
       src_hg_repo: https://gmplib.org/repo/gmp
 
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
-      - uses: tor-actions/setup-tor@main
-        with:
-          daemon: true
-          config: |
-            HTTPTunnelPort 9080
+          python-version: '3.12'
 
       - name: Retrieve the tip revision ID
         id: retrieve-tip-id
@@ -51,13 +45,13 @@ jobs:
             echo "force-run=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: mirror https://gmplib.org/repo/gmp to https://github.com/gmp-mirror/gmp
+      - name: mirror https://gmplib.org/repo/gmp to https://github.com/jevinksie/gmp
         id: mirror
         if: steps.check-cache.outputs.cache-hit != 'true' || steps.day-of-week.outputs.force-run == 'true'
-        uses: 'gmp-mirror/mirror-hg-repo@master'
+        uses: 'mozillazg/mirror-hg-repo@v2'
         with:
           source-hg-repo-url: '${{ env.src_hg_repo }}'
-          destination-git-repo-owner: 'gmp-mirror'
+          destination-git-repo-owner: 'jevinskie'
           destination-git-repo-name: 'gmp'
           destination-git-personal-token: '${{ secrets.PERSONAL_GIT_TOKEN }}'
 
@@ -67,27 +61,22 @@ jobs:
           path: /proc/version # contents of file are not used
           key: ${{ github.job }}-last-hg-tip-id-${{ steps.retrieve-tip-id.outputs.id }}
 
-      - uses: gautamkrishnar/keepalive-workflow@v1
+      - uses: gautamkrishnar/keepalive-workflow@v2
 
+  # disabled
   mirror-gmp-6_3:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    if: github.repository_owner == 'gmp-mirror' # prevent from running on a fork
+    if: false && github.repository_owner == 'jevinskie' # prevent from running on a fork
     env:
-      http_proxy: http://127.0.0.1:9080
       src_hg_repo: https://gmplib.org/repo/gmp-6.3
 
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
-      - uses: tor-actions/setup-tor@main
-        with:
-          daemon: true
-          config: |
-            HTTPTunnelPort 9080
+          python-version: '3.12'
 
       - name: Retrieve the tip revision ID
         id: retrieve-tip-id
@@ -111,13 +100,13 @@ jobs:
             echo "force-run=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: mirror https://gmplib.org/repo/gmp-6.3 to https://github.com/gmp-mirror/gmp-6.3
+      - name: mirror https://gmplib.org/repo/gmp-6.3 to https://github.com/jevinksie/gmp-6.3
         id: mirror
         if: steps.check-cache.outputs.cache-hit != 'true' || steps.day-of-week.outputs.force-run == 'true'
         uses: 'mozillazg/mirror-hg-repo@v2'
         with:
           source-hg-repo-url: '${{ env.src_hg_repo }}'
-          destination-git-repo-owner: 'gmp-mirror'
+          destination-git-repo-owner: 'jevinskie'
           destination-git-repo-name: 'gmp-6.3'
           destination-git-personal-token: '${{ secrets.PERSONAL_GIT_TOKEN }}'
 
@@ -133,25 +122,18 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    env:
-      http_proxy: http://127.0.0.1:9080
 
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
-      - uses: tor-actions/setup-tor@main
-        with:
-          daemon: true
-          config: |
-            HTTPTunnelPort 9080
+          python-version: '3.12'
 
-      - name: mirror https://gmplib.org/repo/gmp-6.2 to https://github.com/gmp-mirror/gmp-6.2
+      - name: mirror https://gmplib.org/repo/gmp-6.2 to https://github.com/jevinksie/gmp-6.2
         uses: 'mozillazg/mirror-hg-repo@v2'
         with:
           source-hg-repo-url: 'https://gmplib.org/repo/gmp-6.2'
-          destination-git-repo-owner: 'gmp-mirror'
+          destination-git-repo-owner: 'jevinskie'
           destination-git-repo-name: 'gmp-6.2'
           destination-git-personal-token: '${{ secrets.PERSONAL_GIT_TOKEN }}'
 
@@ -161,25 +143,18 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    env:
-      http_proxy: http://127.0.0.1:9080
 
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
-      - uses: tor-actions/setup-tor@main
-        with:
-          daemon: true
-          config: |
-            HTTPTunnelPort 9080
+          python-version: '3.12'
 
-      - name: mirror https://gmplib.org/repo/gmp-6.1 to https://github.com/gmp-mirror/gmp-6.1
+      - name: mirror https://gmplib.org/repo/gmp-6.1 to https://github.com/jevinksie/gmp-6.1
         uses: 'mozillazg/mirror-hg-repo@v2'
         with:
           source-hg-repo-url: 'https://gmplib.org/repo/gmp-6.1'
-          destination-git-repo-owner: 'gmp-mirror'
+          destination-git-repo-owner: 'jevinskie'
           destination-git-repo-name: 'gmp-6.1'
           destination-git-personal-token: '${{ secrets.PERSONAL_GIT_TOKEN }}'
 
@@ -189,25 +164,18 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    env:
-      http_proxy: http://127.0.0.1:9080
 
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
-      - uses: tor-actions/setup-tor@main
-        with:
-          daemon: true
-          config: |
-            HTTPTunnelPort 9080
+          python-version: '3.12'
 
-      - name: mirror https://gmplib.org/repo/gmp-6.0 to https://github.com/gmp-mirror/gmp-6.0
+      - name: mirror https://gmplib.org/repo/gmp-6.0 to https://github.com/jevinksie/gmp-6.0
         uses: 'mozillazg/mirror-hg-repo@v2'
         with:
           source-hg-repo-url: 'https://gmplib.org/repo/gmp-6.0'
-          destination-git-repo-owner: 'gmp-mirror'
+          destination-git-repo-owner: 'jevinskie'
           destination-git-repo-name: 'gmp-6.0'
           destination-git-personal-token: '${{ secrets.PERSONAL_GIT_TOKEN }}'
 
@@ -217,25 +185,18 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    env:
-      http_proxy: http://127.0.0.1:9080
 
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
-      - uses: tor-actions/setup-tor@main
-        with:
-          daemon: true
-          config: |
-            HTTPTunnelPort 9080
+          python-version: '3.12'
 
-      - name: mirror https://gmplib.org/repo/gmp-5.1 to https://github.com/gmp-mirror/gmp-5.1
+      - name: mirror https://gmplib.org/repo/gmp-5.1 to https://github.com/jevinksie/gmp-5.1
         uses: 'mozillazg/mirror-hg-repo@v2'
         with:
           source-hg-repo-url: 'https://gmplib.org/repo/gmp-5.1'
-          destination-git-repo-owner: 'gmp-mirror'
+          destination-git-repo-owner: 'jevinskie'
           destination-git-repo-name: 'gmp-5.1'
           destination-git-personal-token: '${{ secrets.PERSONAL_GIT_TOKEN }}'
 
@@ -245,24 +206,17 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    env:
-      http_proxy: http://127.0.0.1:9080
 
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
-      - uses: tor-actions/setup-tor@main
-        with:
-          daemon: true
-          config: |
-            HTTPTunnelPort 9080
+          python-version: '3.12'
 
-      - name: mirror https://gmplib.org/repo/gmp-5.0 to https://github.com/gmp-mirror/gmp-5.0
+      - name: mirror https://gmplib.org/repo/gmp-5.0 to https://github.com/jevinksie/gmp-5.0
         uses: 'mozillazg/mirror-hg-repo@v2'
         with:
           source-hg-repo-url: 'https://gmplib.org/repo/gmp-5.0'
-          destination-git-repo-owner: 'gmp-mirror'
+          destination-git-repo-owner: 'jevinskie'
           destination-git-repo-name: 'gmp-5.0'
           destination-git-personal-token: '${{ secrets.PERSONAL_GIT_TOKEN }}'
