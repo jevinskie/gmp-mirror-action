@@ -23,10 +23,22 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Tailscale
+        uses: tailscale/github-action@v3
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci-gmp
+          version: latest
+
+      - name: use named exit node in tailscale
+        run: |
+          timeout 5m sudo -E tailscale set --exit-node=nitro
+
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
-        if: true # debug
-        # if: false # no-debug
+        # if: true # debug
+        if: false # no-debug
 
       - name: Retrieve the tip revision ID
         id: retrieve-tip-id
