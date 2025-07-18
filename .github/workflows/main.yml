@@ -78,8 +78,6 @@ jobs:
           path: /proc/version # contents of file are not used
           key: ${{ github.job }}-last-hg-tip-id-${{ steps.retrieve-tip-id.outputs.id }}
 
-      - uses: gautamkrishnar/keepalive-workflow@v2
-
   # disabled
   mirror-gmp-6_3:
     runs-on: ubuntu-latest
